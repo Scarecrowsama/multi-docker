@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  -docker build -t scarecrowsama/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true scarecrowsama/react-test npm test
+
+after_success:
+  - docker build -t scarecrowsama/multi-client ./client
+  - docker build -t scarecrowsama/multi-nginx ./nginx
+  - docker build -t scarecrowsama/multi-server ./server
+  - docker build -t scarecrowsama/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push scarecrowsama/multi-client
+  - docker push scarecrowsama/multi-nginx
+  - docker push scarecrowsama/multi-server
+  - docker push scarecrowsama/multi-worker
