@@ -18,3 +18,16 @@ after_success:
   - docker push scarecrowsama/multi-nginx
   - docker push scarecrowsama/multi-server
   - docker push scarecrowsama/multi-worker
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker-app
+  env: MultiDockerApp-env
+  bucket_name: elasticbeanstalk-us-east-2-155416677633
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
